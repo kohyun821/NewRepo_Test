@@ -15,6 +15,7 @@ public partial class MyWorldDbContext : DbContext
     {
     }
 
+
     public virtual DbSet<Department> Departments { get; set; }
 
     public virtual DbSet<Employee> Employees { get; set; }
