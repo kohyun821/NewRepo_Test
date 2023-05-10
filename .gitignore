@@ -14,8 +14,8 @@
 *.userprefs
 
 #DB관련 Ignore
-appsettings.json
-MyWorldDbContext.cs
+webapi/appsettings.json
+webapi/Models/MyWorldDbContext.cs
 
 # Mono auto generated files
 mono_crash.*
