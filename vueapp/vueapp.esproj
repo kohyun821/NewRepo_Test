@@ -1,6 +1,5 @@
 <Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/0.5.74-alpha">
   <PropertyGroup>
-    <StartupCommand>npm run serve</StartupCommand>
     <JavaScriptTestRoot>.\</JavaScriptTestRoot>
     <JavaScriptTestFramework>Jest</JavaScriptTestFramework>
     <!-- Command to run on project build -->
@@ -10,6 +9,8 @@
     <ProductionBuildCommand>npm run build</ProductionBuildCommand>
     <!-- Folder where production build objects will be placed -->
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist</BuildOutputFolder>
+    <StartupCommand>npm run serve</StartupCommand>
+    <StartupCommandWorkingDirectory>C:\Vue.js\Proj\Final_Proj\vueapp</StartupCommandWorkingDirectory>
   </PropertyGroup>
   <ItemGroup>
     <None Update="appsettings.Development.json">

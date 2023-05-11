@@ -17,6 +17,11 @@
 webapi/appsettings.json
 webapi/Models/MyWorldDbContext.cs
 
+#충돌 방지 Ignore
+vueapp/vue.config.js
+vueapp/package-lock.json
+Final_Proj.sln
+
 # Mono auto generated files
 mono_crash.*
 
@@ -365,3 +370,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Final_Proj.sln
+/Final_Proj.sln
