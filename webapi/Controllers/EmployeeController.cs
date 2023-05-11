@@ -1,36 +1,50 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using webapi.Models;
 
 namespace webapi.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class EmployeeController : Controller
     {
-        private readonly MyWorldDbContext _DBmWorldDbContext;
+        private readonly TestDbContext _DBtestDbContext;
 
 
-        public EmployeeController(MyWorldDbContext _mWorldDbContext)
+        public EmployeeController(TestDbContext _testDbContext)
         {
-            _DBmWorldDbContext = _mWorldDbContext;
+            this._DBtestDbContext = _testDbContext;
         }
 
         [HttpGet]
-        [Route("Employee")]
         public async Task<IActionResult> GetEmployee()
         {
             try
             {
-                List<Employee> listdepartment = _DBmWorldDbContext.Employees.ToList();
-                if (listdepartment != null)
+                var emplyees = await _DBtestDbContext.Employees
+                                .Include(e => e.Department)
+                                .Select(e=> new
+                                {
+                                    e.EmployeeId,
+                                    e.EmployeeName,
+                                    e.DepartmentId,
+                                    DepartmentName = e.Department.DepartmentName
+                                })
+                              .ToListAsync();
+
+                if (!emplyees.Any())
                 {
-                    return Ok(listdepartment);
+                    return NotFound("Employee not found");
                 }
-                return Ok("No Database");
+                return Ok(emplyees);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
+
+
     }
 }

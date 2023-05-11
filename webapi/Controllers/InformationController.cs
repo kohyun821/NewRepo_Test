@@ -1,31 +1,35 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using webapi.Models;
 
 namespace webapi.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class InformationController : Controller
     {
-        private readonly MyWorldDbContext _DBmWorldDbContext;
+        private readonly TestDbContext _DBtestDbContext;
 
 
-        public InformationController(MyWorldDbContext _mWorldDbContext)
+        public InformationController(TestDbContext _testDbContext)
         {
-            _DBmWorldDbContext = _mWorldDbContext;
+            this._DBtestDbContext = _testDbContext;
         }
 
         [HttpGet]
-        [Route("Information")]
         public async Task<IActionResult> GetInformation()
         {
             try
             {
-                List<Information> listdepartment = _DBmWorldDbContext.Information.ToList();
-                if (listdepartment != null)
+                var informations = await _DBtestDbContext.Information
+                             .ToListAsync();
+
+                if (!informations.Any())
                 {
-                    return Ok(listdepartment);
+                    return NotFound("Information not found");
                 }
-                return Ok("No Database");
+                return Ok(informations);
             }
             catch (Exception ex)
             {

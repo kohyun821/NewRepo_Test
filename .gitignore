@@ -16,6 +16,7 @@
 #DB관련 Ignore
 webapi/appsettings.json
 webapi/Models/MyWorldDbContext.cs
+webapi/Models/testDbContext.cs
 
 #충돌 방지 Ignore
 vueapp/vue.config.js

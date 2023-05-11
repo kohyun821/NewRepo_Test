@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using webapi.Models;
 
 namespace webapi.Controllers
@@ -9,12 +10,12 @@ namespace webapi.Controllers
     public class DepartmentController : Controller
     {
 
-        private readonly MyWorldDbContext _DBmWorldDbContext;
+        private readonly TestDbContext _DBtestDbContext;
 
 
-        public DepartmentController(MyWorldDbContext _mWorldDbContext)
+        public DepartmentController(TestDbContext _testDbContext)
         {
-            this._DBmWorldDbContext = _mWorldDbContext;
+            this._DBtestDbContext = _testDbContext;
         }
 
         [HttpPost]
@@ -24,14 +25,14 @@ namespace webapi.Controllers
             try
             {
                 //같은 이름으로 생성 불가능 하도록 
-                var dbDepartment = _DBmWorldDbContext.Departments.Where(u => u.DepartmentName == department.DepartmentName).FirstOrDefault();
+                var dbDepartment = _DBtestDbContext.Departments.Where(u => u.DepartmentName == department.DepartmentName).FirstOrDefault();
                 if (dbDepartment != null)
                 {
                     return BadRequest("Fail");
                 }
                 //department.DepartmentStatus = true;
-                _DBmWorldDbContext.Departments.Add(department);
-                await _DBmWorldDbContext.SaveChangesAsync();
+                _DBtestDbContext.Departments.Add(department);
+                await _DBtestDbContext.SaveChangesAsync();
 
                 return Ok("Success");
 
@@ -46,8 +47,8 @@ namespace webapi.Controllers
         {
             try
             {
-                var departments = _DBmWorldDbContext.Departments
-                              .ToList();
+                var departments = await _DBtestDbContext.Departments
+                              .ToListAsync();
 
                 if (!departments.Any())
                 {
@@ -66,7 +67,7 @@ namespace webapi.Controllers
         {
             try
             {
-                var department = await _DBmWorldDbContext.Departments.FindAsync(id);
+                var department = await _DBtestDbContext.Departments.FindAsync(id);
                 if (department == null)
                 {
                     return NotFound("Department not found");
@@ -85,9 +86,9 @@ namespace webapi.Controllers
             try
             {
                 //여러개 리턴 할 수 있도록 department 가 아닌 departments로 변수명 정함..
-                var departments = _DBmWorldDbContext.Departments
+                var departments = await _DBtestDbContext.Departments
                                .Where(d => d.DepartmentName == departmentName)
-                               .ToList();
+                               .ToListAsync();
 
                 if (!departments.Any())
                 {
