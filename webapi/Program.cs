@@ -22,7 +22,7 @@ builder.Services.AddCors(options =>
 });
 
 //디비 연결
-builder.Services.AddDbContext<MyWorldDbContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<TestDbContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 

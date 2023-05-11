@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using webapi.Models;
 
 namespace webapi.Controllers
@@ -8,12 +9,12 @@ namespace webapi.Controllers
     [Route("[controller]")]
     public class MaterialController : Controller
     {
-        private readonly MyWorldDbContext _DBmWorldDbContext;
+        private readonly TestDbContext _DBtestDbContext;
 
-        
-        public MaterialController(MyWorldDbContext _mWorldDbContext)
+
+        public MaterialController(TestDbContext _testDbContext)
         {
-            _DBmWorldDbContext = _mWorldDbContext;
+            this._DBtestDbContext = _testDbContext;
         }
 
         [HttpPost]
@@ -22,11 +23,11 @@ namespace webapi.Controllers
         {
             try
             {
-                var dbMaterial = _DBmWorldDbContext.Materials;
+                var dbMaterial = _DBtestDbContext.Materials;
                 material.MaterialName = material.MaterialName;
                 material.MaterialStatus = true;
-                _DBmWorldDbContext.Materials.Add(material);
-                await _DBmWorldDbContext.SaveChangesAsync();
+                _DBtestDbContext.Materials.Add(material);
+                await _DBtestDbContext.SaveChangesAsync();
 
                 return Ok("Success");
 
@@ -42,12 +43,14 @@ namespace webapi.Controllers
         {
             try
             {
-                List<Material> listdepartment = _DBmWorldDbContext.Materials.ToList();
-                if (listdepartment != null)
+                var materials = await _DBtestDbContext.Materials
+                             .ToListAsync();
+
+                if (!materials.Any())
                 {
-                    return Ok(listdepartment);
+                    return NotFound("Material not found");
                 }
-                return Ok("No Database");
+                return Ok(materials);
             }
             catch (Exception ex)
             {
