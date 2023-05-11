@@ -16,6 +16,27 @@ namespace webapi.Controllers
             _DBmWorldDbContext = _mWorldDbContext;
         }
 
+        [HttpPost]
+        [Route("RegistMaterial")]
+        public async Task<IActionResult> RegistMaterial([FromBody] Material material)
+        {
+            try
+            {
+                var dbMaterial = _DBmWorldDbContext.Materials;
+                material.MaterialName = material.MaterialName;
+                material.MaterialStatus = true;
+                _DBmWorldDbContext.Materials.Add(material);
+                await _DBmWorldDbContext.SaveChangesAsync();
+
+                return Ok("Success");
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
         [HttpGet]
         public async Task<IActionResult> GetMaterial()
         {
