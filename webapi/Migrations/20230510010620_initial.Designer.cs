@@ -11,7 +11,7 @@ using webapi.Models;
 
 namespace webapi.Migrations
 {
-    [DbContext(typeof(MyWorldDbContext))]
+    [DbContext(typeof(TestDbContext))]
     [Migration("20230510010620_initial")]
     partial class initial
     {
