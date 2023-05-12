@@ -34,7 +34,7 @@ namespace webapi.Controllers
                 _DBtestDbContext.Departments.Add(department);
                 await _DBtestDbContext.SaveChangesAsync();
 
-                return Ok("Success");
+                return Ok(department);
 
             }
             catch (Exception ex) {

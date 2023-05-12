@@ -25,7 +25,7 @@
     methods: {
       get(){
         this.axios
-        .get(`https://localhost:7059/Department`)
+        .get(`http://localhost:54884/api/department/depList`)
         .then((result)=>{
           console.log(result.data);
           this.data.push(result.data);
