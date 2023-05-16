@@ -76,12 +76,10 @@ export default {
             )
                 alert("공란으로 입력 하지 말아 주세요.");
             else {
-                axios.post("http://localhost:54884/api/Regist/Employee", this.FormData)
+                axios.post("http://localhost:54884/api/Employee/Regist", this.FormData)
                     .then((response) => {
-                        console.log(response);
                         this.employees.push(response.data);
-                        this.FormData.employeeName = '';
-                        this.FormData.departmentId = '';
+                        return;
                     })
                     .catch((error) => {
                         console.log(error);

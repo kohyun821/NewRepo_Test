@@ -32,7 +32,7 @@
         <form @submit.prevent="CreateInformation">
             <div>
                 <label>부서 이름</label>
-                <select v-model="FormData.departmentId">
+                <select v-model="FormData.departmentId" @change="filterEmployees">
                     <option v-for="department in departments" :key="department.DepartmentId"
                         :value="department.DepartmentId">
                         {{ department.DepartmentName }}
@@ -41,7 +41,8 @@
             </div>
             <div>
                 <label>사원 이름</label>
-                <select v-model="FormData.employeeId" @change="filterEmployees">
+                <select v-model="FormData.employeeId">
+                    <option v-if="employees.length == 0">속한 직원 없음</option>
                     <option v-for="employee in employees" :key="employee.EmployeeId" :value="employee.EmployeeId">
                         {{ employee.EmployeeId }}/{{ employee.EmployeeName }}
                     </option>
@@ -100,26 +101,19 @@ export default {
     async created() {
         try {
             const informationresponse = await axios.get('http://localhost:54884/api/Information');
-            console.log("materialResponse");
-            console.log(informationresponse.data);
             this.informations = informationresponse.data;
 
             //부서 Id 가 0 이 아닌 모든 사원 Get
             const employeeResponse = await axios.get('http://localhost:54884/api/Employee/Working');
-            console.log("materialResponse");
-            console.log(employeeResponse.data);
             this.allEmployees = employeeResponse.data;
             this.employees = employeeResponse.data;
 
             //MaterialStatus가 1인 데이터 Get
             const materialResponse = await axios.get('http://localhost:54884/api/Material/Using/1');
-            console.log("materialResponse");
-            console.log(materialResponse);
             this.materials = materialResponse.data;
 
             //DepartmentStatus가 1인 데이터(부서) Get
             const departmentResponse = await axios.get('http://localhost:54884/api/Department/UsingAndWorking/1');
-            console.log(departmentResponse.data);
             this.departments = departmentResponse.data;
         } catch (error) {
             console.error(error)
@@ -129,10 +123,14 @@ export default {
         filterEmployees() {
             this.employees = this.allEmployees.filter(
                 employee => employee.DepartmentId === this.FormData.departmentId
-            )
+            );
+            if (this.employees.length == 0) {
+                this.FormData.employeeId = '';
+            }
         },
         CreateInformation() {
-            if (this.FormData.materialId === '' ||
+            if (this.FormData.departmentId === '' ||
+                this.FormData.materialId === '' ||
                 this.FormData.employeeId === '' ||
                 this.FormData.informationStatus === '' ||
                 this.FormData.informationAmount === ''
@@ -162,8 +160,9 @@ export default {
                     return;
                 }
 
-                axios.post("http://localhost:54884/api/Regist/Information", this.FormData)
+                axios.post("http://localhost:54884/api/Information/Regist", this.FormData)
                     .then((response) => {
+                        console.log(response.data);
                         this.informations.push(response.data);
                         return;
                     })

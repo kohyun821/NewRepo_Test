@@ -78,9 +78,8 @@ export default {
             else {
                 this.FormData.materialAmount = Number(this.FormData.materialAmount);
                 this.FormData.materialTotal = this.FormData.materialAmount;
-                axios.post("http://localhost:54884/api/Regist/Material", this.FormData)
+                axios.post("http://localhost:54884/api/Material/Regist", this.FormData)
                     .then((response) => {
-                        console.log(response);
                         this.materials.push(response.data);
                         return;
                     })
