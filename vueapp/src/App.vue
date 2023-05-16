@@ -2,8 +2,6 @@
     <PageHeader></PageHeader>
     <router-view></router-view>
     <PageFooter></PageFooter>
-    <button @click="get">데이터 가져오기</button>
-    <p>{{ data }}</p>
 </template>
 
 <script>
@@ -18,26 +16,11 @@
     },
     data() {
       return {
-        data : [],
-        id : 1
+
       }
     },
     methods: {
-      get(){
-        this.axios
-        .get(`http://localhost:54884/api/department/depList`)
-        .then((result)=>{
-          console.log(result.data);
-          this.data.push(result.data);
-          this.id++;
-        })
-        .catch((error)=>{
-          console.log(error);
-        })
-        .finally(()=>{
-          console.log("finally");
-        });
-      }
+      
     }
   }
 </script>
