@@ -23,17 +23,29 @@ namespace webapi.Controllers
         {
             try
             {
-                var dbMaterial = _DBtestDbContext.Materials;
-                material.MaterialName = material.MaterialName;
-                material.MaterialStatus = true;
+                var dbMaterial = _DBtestDbContext.Materials.Where(x => x.MaterialName == material.MaterialName).FirstOrDefault();
+                if(dbMaterial != null)
+                {
+                    return BadRequest("이름이 이미 있습니다.");
+                }
+                if (material.MaterialAmount <0 || material.MaterialTotal < 0)
+                {
+                    return BadRequest("0보다 작은 수는 불가능 합니다.");
+                }
+                if (material.MaterialAmount > material.MaterialTotal)
+                {
+                    return BadRequest("현재 수량은 총합보다 작거나 같아야 합니다.");
+                }
                 _DBtestDbContext.Materials.Add(material);
                 await _DBtestDbContext.SaveChangesAsync();
 
-                return Ok("Success");
+
+                return Ok(material);
 
             }
             catch (Exception ex)
             {
+                //return BadRequest("다시 확인해 주세요");
                 return BadRequest(ex.Message);
             }
 

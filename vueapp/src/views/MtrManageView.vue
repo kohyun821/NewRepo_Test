@@ -12,12 +12,12 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="material in materials" :key="material.materialId">
-                    <td>{{ material.materialId }}</td>
-                    <td>{{ material.materialName }}</td>
-                    <td>{{ material.materialAmount }}</td>
-                    <td>{{ material.materialTotal }}</td>
-                    <td>{{ material.materialStatus ? '활성화' : '비 활성화' }}</td>
+                <tr v-for="material in materials" :key="material.MaterialId">
+                    <td>{{ material.MaterialId }}</td>
+                    <td>{{ material.MaterialName }}</td>
+                    <td>{{ material.MaterialAmount }}</td>
+                    <td>{{ material.MaterialTotal }}</td>
+                    <td>{{ material.MaterialStatus ? '활성화' : '비 활성화' }}</td>
                 </tr>
             </tbody>
         </table>
@@ -29,6 +29,8 @@
         1515asdf
     </h1>
     <div>
+        <!-- form 으로 값 입력 처리 => 엔터를 입력해도 가능 -->
+        <!-- https://hello-bryan.tistory.com/266 -->
         <form @submit.prevent="CreateMaterial">
             <div>
                 <label>이름</label>
@@ -36,11 +38,7 @@
             </div>
             <div>
                 <label>수량</label>
-                <input type="number" id="materialAmount" v-model="FormData.materialAmount" />
-            </div>
-            <div>
-                <label>합계</label>
-                <input type="number" id="materialTotal" v-model="FormData.materialTotal" />
+                <input type="number" id="materialAmount" min="0" v-model="FormData.materialAmount" />
             </div>
             <button>생성</button>
         </form>
@@ -64,16 +62,34 @@ export default {
     },
     async created() {
         try {
-            const response = await axios.get('https://localhost:7059/Material')
+            const response = await axios.get('http://localhost:54884/api/Material')
             console.log(response.data);
-            this.materials = response.data
+            this.materials = response.data;
         } catch (error) {
             console.error(error)
         }
     },
-    methods:{
-        CreateMaterial(){
-            axios.post("")
+    methods: {
+        CreateMaterial() {
+            if (this.FormData.materialName === '' ||
+                this.FormData.materialAmount === ''
+            )
+                alert("공란으로 입력 하지 말아 주세요.");
+            else {
+                this.FormData.materialAmount = Number(this.FormData.materialAmount);
+                this.FormData.materialTotal = this.FormData.materialAmount;
+                axios.post("http://localhost:54884/api/Regist/Material", this.FormData)
+                    .then((response) => {
+                        console.log(response);
+                        this.materials.push(response.data);
+                        return;
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        alert(error.response.data);
+                    })
+            }
+
         }
     },
 }
