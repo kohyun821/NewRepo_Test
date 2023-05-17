@@ -17,7 +17,8 @@
         <div id="modal">
             <DepRegistModal v-if="regModalCheck" @close-modal="regModalCheck=false" @RegDep="reList"></DepRegistModal>
             <DepModifyModal v-if="detModalCheck" :rowOfChild="rowData" 
-            @close-modal="detModalCheck=false" @RegDep="reList"></DepModifyModal>
+            @close-modal="detModalCheck=false" @RegDep="reList"
+            @refresh="refreshItem"></DepModifyModal>
         </div>
     </div>
 </template>
@@ -48,7 +49,7 @@ export default {
         }
     },
     mounted(){
-        this.getList()
+        this.getList();
     },
     methods:{
         rowClick(item){
@@ -70,10 +71,14 @@ export default {
             .then((result)=>{
                 console.log(result.data.list);
                 this.list = result.data.list;
+                this.list.sort((a, b) => b.DepartmentStatus - a.DepartmentStatus);
             })
             .catch((error)=>{
                 console.log(error);
             })
+        },
+        refreshItem(){
+            this.list.sort((a, b) => b.DepartmentStatus - a.DepartmentStatus);
         }
     }
 }
