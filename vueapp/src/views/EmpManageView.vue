@@ -1,29 +1,27 @@
 <template>
     <div>
-        <div>
-            <b-button variant="success" @click="EmpAdd">사원 추가</b-button>
+        <div id="btnDiv">
+            <b-button variant="primary" @click="showModal">사원 추가</b-button>
         </div>
         <b-table striped hover :items="list">
-            <thead>
-                <th></th>
-                <th></th>
-                <th></th>
-            </thead>
-            <tbody>
-                <tr v-for="(value, idx) in list" :key="idx">
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </tbody>
+            
         </b-table>
     </div>
+    <div id="modal">
+            <EmpRegistModal v-if="regModalCheck" @close-modal="regModalCheck=false" @RegDep="reList"></EmpRegistModal>
+        </div>
 </template>
 
 <script>
+import EmpRegistModal from "../components/EmpRegistModal.vue";
+
 export default {
+    components:{
+        EmpRegistModal
+    },
     data(){
         return {
+            regModalCheck:false,
             formData:{
                 departmentName:''
             },
@@ -34,6 +32,9 @@ export default {
         this.getList()
     },
     methods:{
+        showModal(){
+            this.regModalCheck = !this.regModalCheck;
+        },
         getList(){
             this.axios
             .get('http://localhost:54884/api/employee/empList')
@@ -48,3 +49,10 @@ export default {
     }
 }
 </script>
+<style scope>
+#btnDiv{
+    text-align: right;
+    margin-right: 15%;
+    margin-bottom: 2%;
+}
+</style>

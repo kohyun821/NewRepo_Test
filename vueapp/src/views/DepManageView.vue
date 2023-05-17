@@ -1,48 +1,68 @@
 <template>
     <div>
         <div id="btnDiv">
-            <b-button variant="primary" @click="showModal">부서추가</b-button>
+            <b-button variant="primary" @click="showModal">부서 추가</b-button>
         </div>
         <div>
-            <b-table striped hover :items="list">
-                <thead>
-                    <th>부서코드</th>
-                    <th>부서명</th>
-                    <th>부서상태</th>
-                </thead>
-                <tbody>
-                    <tr v-for="(value, idx) in list" :key="idx">
-                        <td>{{ value.departmentId }}</td>
-                        <td>{{ value.departmentName }}</td>
-                        <td>{{ value.departmentStatus }}</td>
+            <b-table striped hover :items="list" :fields="fields" @row-clicked="rowClick">
+                <template v-slot:cell(DepartmentStatus)="{ value }">
+                    {{ value ? '활성화' : '비활성화' }}
+                </template>
+                <template v-slot:item="{ item }">
+                    <tr @click="depDetail(item)">
                     </tr>
-                </tbody>
+                </template>
             </b-table>
         </div>
         <div id="modal">
-            <Modal v-if="modalCheck" @close-modal="modalCheck=false"></Modal>
+            <DepRegistModal v-if="regModalCheck" @close-modal="regModalCheck=false" @RegDep="reList"></DepRegistModal>
+            <DepModifyModal v-if="detModalCheck" :rowOfChild="rowData" 
+            @close-modal="detModalCheck=false" @RegDep="reList"></DepModifyModal>
         </div>
     </div>
 </template>
 <script>
-import Modal from "../components/DepRegistModal.vue";
+import DepRegistModal from "../components/DepRegistModal.vue";
+import DepModifyModal from "../components/DepModifyModal.vue";
 
 export default {
     components:{
-        Modal
+        DepRegistModal,
+        DepModifyModal
     },
     data(){
         return {
-            modalCheck:false,
-            list:[]
+            regModalCheck:false,
+            detModalCheck:false,
+            list:[],
+            fields: [
+                { key: 'DepartmentId', label: '부서 번호' },
+                { key: 'DepartmentName', label: '부서명' },
+                { key: 'DepartmentStatus', label: '활성화 여부' }
+            ],
+            rowData:{
+                DepartmentId:'',
+                DepartmentName:'',
+                DepartmentStatus:''
+            }
         }
     },
     mounted(){
         this.getList()
     },
     methods:{
+        rowClick(item){
+            this.detModalCheck = !this.detModalCheck;
+            this.rowData.DepartmentId = item.DepartmentId;
+            this.rowData.DepartmentName = item.DepartmentName;
+            this.rowData.DepartmentStatus = item.DepartmentStatus;
+            console.log(this.rowData);
+        },
+        reList(data){
+            this.list = data;
+        },
         showModal(){
-            this.modalCheck = !this.modalCheck;
+            this.regModalCheck = !this.regModalCheck;
         },
         getList(){
             this.axios
@@ -58,7 +78,7 @@ export default {
     }
 }
 </script>
-<style>
+<style scope>
 #btnDiv{
     text-align: right;
     margin-right: 15%;

@@ -15,12 +15,11 @@
 </template>
 <script>
 export default{
-    emits:['list'],
     data(){
         return {
             formData:{
                 departmentName:''
-            }
+            },
         }
     },
     methods:{
@@ -39,8 +38,8 @@ export default{
                         alert("같은 이름의 부서가 있습니다.");
                     }else{
                         alert("추가 완료!");
-                        this.$emit('list',result.data.list);
                         this.$emit('close-modal');
+                        this.$emit('RegDep', result.data.list);
                     }
                 })
                 .catch((error)=>{
