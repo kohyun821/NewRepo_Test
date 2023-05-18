@@ -1,80 +1,96 @@
 <template>
-    <div class="about">
+    <div class="d-flex justify-content-between align-items-center">
         <h1>자재관리</h1>
-        <table v-if="materials.length">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>이름</th>
-                    <th>남은 양</th>
-                    <th>총 합</th>
-                    <th>상태</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="material in materials" :key="material.materialId">
-                    <td>{{ material.materialId }}</td>
-                    <td>{{ material.materialName }}</td>
-                    <td>{{ material.materialAmount }}</td>
-                    <td>{{ material.materialTotal }}</td>
-                    <td>{{ material.materialStatus ? '활성화' : '비 활성화' }}</td>
-                </tr>
-            </tbody>
-        </table>
-        <div v-else>
-            <p>No materials found.</p>
-        </div>
+        <b-button variant="primary" @click="showModal">자재추가</b-button>
     </div>
-    <h1>
-        1515asdf
-    </h1>
-    <div>
-        <form @submit.prevent="CreateMaterial">
-            <div>
-                <label>이름</label>
-                <input type="text" id="materialName" v-model="FormData.materialName" />
-            </div>
-            <div>
-                <label>수량</label>
-                <input type="number" id="materialAmount" v-model="FormData.materialAmount" />
-            </div>
-            <div>
-                <label>합계</label>
-                <input type="number" id="materialTotal" v-model="FormData.materialTotal" />
-            </div>
-            <button>생성</button>
-        </form>
+    
+    <b-table striped hover :items="materials" :fields="fields" @row-clicked="rowClick">
+            <template v-slot:cell(MaterialStatus)="{ value }">
+                {{ value ? '활성화' : '비 활성화' }}
+            </template>
+        </b-table>
+    <RegistModal v-if="regist_modalCheck" 
+    @close-modal="regist_modalCheck = false" 
+    @refresh="refreshMaterials"
+    ></RegistModal>
 
-    </div>
+    <ModifyModal v-if="modify_modalCheck" 
+    :rowOfChild="rowData" 
+    @close-modal="modify_modalCheck = false"
+    @updateMaterial="refreshMaterials"
+    ></ModifyModal>
 </template>
 
 <script>
+import RegistModal from "../components/MtrRegistModal.vue";
+import ModifyModal from "../components/MtrModifyModal.vue";
 import axios from 'axios'
 export default {
     name: 'CreateMaterial',
+    components: {
+        RegistModal,
+        ModifyModal
+    },
     data() {
         return {
+            regist_modalCheck: false,
+            modify_modalCheck: false,
             materials: [],
-            FormData: {
-                materialName: '',
-                materialAmount: '',
-                materialTotal: ''
+            fields: [
+                { key: 'MaterialId', label: '자재 번호' },
+                { key: 'MaterialName', label: '자재명' },
+                { key: 'MaterialAmount', label: '남은 수량' },
+                { key: 'MaterialTotal', label: '자재 수량' },
+                { key: 'MaterialStatus', label: '활성화 여부' }
+            ],
+            rowData: {
+                MaterialId: '',
+                MaterialName: '',
+                MaterialAmount: '',
+                MaterialTotal: '',
+                MaterialStatus: ''
             }
         }
     },
     async created() {
         try {
-            const response = await axios.get('https://localhost:7059/Material')
-            console.log(response.data);
-            this.materials = response.data
+            const response = await axios.get('http://localhost:54884/api/Material')
+            //this.materials = response.data;
+            //true가 먼저 위에 올 수 있도록.
+            this.materials = response.data.sort((a, b) => b.MaterialStatus - a.MaterialStatus);
+            console.log(this.materials)
         } catch (error) {
             console.error(error)
         }
     },
-    methods:{
-        CreateMaterial(){
-            axios.post("")
+    methods: {
+        rowClick(item) {
+            this.modify_modalCheck = !this.modify_modalCheck;
+            this.rowData.MaterialId = item.MaterialId;
+            this.rowData.MaterialName = item.MaterialName;
+            this.rowData.MaterialAmount = item.MaterialAmount;
+            this.rowData.MaterialTotal = item.MaterialTotal;
+            this.rowData.MaterialStatus = item.MaterialStatus;
+        },
+        showModal() {
+            this.regist_modalCheck = !this.regist_modalCheck;
+        },
+        refreshMaterials(updatedMaterial) {
+            console.log("updatedMaterial", updatedMaterial);
+            console.log("this.materials", this.materials);
+            this.materials.length = 0;
+            console.log("this.materials - after", this.materials);
+            this.materials = updatedMaterial;
+            console.log("this.materials - after - after", this.materials);
+            this.materials.sort((a, b) => b.MaterialStatus - a.MaterialStatus);
         }
-    },
+    }
 }
 </script>
+<style>
+#btnDiv {
+    text-align: right;
+    margin-right: 15%;
+    margin-bottom: 2%;
+}
+</style>
