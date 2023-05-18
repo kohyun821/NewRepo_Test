@@ -32,9 +32,9 @@
             <div class="modal-input">
                 <b>입/출고</b>
                 <input type="radio" id="in" value="1" v-model="FormData.informationStatus">
-                <label for="in">입고</label>
+                <label for="in">반납</label>
                 <input type="radio" id="out" value="0" v-model="FormData.informationStatus">
-                <label for="out">출고</label>
+                <label for="out">대여</label>
             </div>
             <div class="modal-input">
                 <b>자재 수량 : </b>
@@ -79,6 +79,7 @@ export default {
             const employeeResponse = await axios.get('http://localhost:54884/api/Employee/Working');
             this.allEmployees = employeeResponse.data;
             this.employees = employeeResponse.data;
+
             //MaterialStatus가 1인 데이터 Get
             const materialResponse = await axios.get('http://localhost:54884/api/Material/Using/1');
             this.materials = materialResponse.data;
@@ -139,12 +140,12 @@ export default {
                 axios.post("http://localhost:54884/api/Information/Regist", this.FormData)
                     .then((response) => {
                         alert("값이 추가 되었습니다.");
-                        this.$emit('refresh', response.data);
+                        console.log("response.data",response.data)
+                        this.$emit('updateInformation', response.data);
                         this.modalClose();
                     })
                     .catch((error) => {
-                        console.log(error);
-                        alert(error);
+                        alert(error.response.data);
                     })
             }
 

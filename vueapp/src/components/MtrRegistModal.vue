@@ -1,7 +1,7 @@
 <template>
     <div class="modal-wrap" @click="$emit('close-modal')">
         <div class="modal-container" @click.stop="">
-            <h3>부서 추가</h3>
+            <h3>자재 추가</h3>
             <hr />
             <div class="modal-input">
                 <b>이름 : </b>
@@ -21,7 +21,6 @@
 <script>
 import axios from 'axios'
 export default {
-    emits: ['list'],
     data() {
         return {
             FormData: {
@@ -47,11 +46,10 @@ export default {
                 axios.post("http://localhost:54884/api/Material/Regist", this.FormData)
                     .then((response) => {
                         alert("값이 추가 되었습니다.");
-                        this.$emit('refresh',response.data);
+                        this.$emit('updateMaterial',response.data);
                         this.modalClose();
                     })
                     .catch((error) => {
-                        console.log(error);
                         alert(error.response.data);
                     })
             }

@@ -12,9 +12,11 @@
     </div>
     <div>
         <div id="modal">
-            <Modal v-if="modalCheck" @close-modal="modalCheck = false"></Modal>
+            <Modal v-if="modalCheck" 
+            @close-modal="modalCheck = false" 
+            @updateInformation="refreshInformations"
+            ></Modal>
         </div>
-        <Modal v-if="modalCheck" @close-modal="modalCheck = false" @refresh="refreshInformations"></Modal>
     </div>
 </template>
 
@@ -53,7 +55,12 @@ export default {
             this.modalCheck = !this.modalCheck;
         },
         refreshInformations(newInformation) {
-            this.informations.push(newInformation);
+            console.log("informations",this.informations)
+            console.log("newInformation",newInformation)
+            this.informations.length=0;
+            console.log("informations-after",this.informations)
+            this.informations = newInformation;
+            console.log("informations-after-after",this.informations)
         }
     },
 }
