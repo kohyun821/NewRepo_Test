@@ -1,21 +1,31 @@
 <template>
     <div class="modal-wrap" @click="$emit('close-modal')">
         <div class="modal-container" @click.stop="">
-            <h3>사원 추가</h3>
+            <h3>사원 상세보기</h3>
             <hr/>
             <div id="modal-content">
                 <table>
                     <tr>
                         <td class="info">
-                            <b>사원명 : </b>
+                            <b>사원 번호 : </b>
                         </td>
-                        <td><input v-model="formData.EmployeeName" type="text"/></td>
+                        <td>
+                            <b>{{rowOfChild.EmployeeId}}</b>
+                        </td>
                     </tr>
                     <tr>
                         <td class="info">
-                            <b>부서 : </b>
+                            <b>사원명 : </b>
                         </td>
                         <td>
+                            <input v-model="formData.EmployeeName" type="text"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="info">
+                            <b>부서명 : </b>
+                        </td>
+                        <td width="70%">
                             <b-form-select v-model="formData.DepartmentId" :options="options" size="sm" class="mt-3"></b-form-select>
                         </td>
                     </tr>
@@ -23,27 +33,60 @@
             </div>
             <div class="modal-btn">
                 <b-button @click="modalClose">닫기</b-button>
-                <b-button variant="primary" @click="EmpAdd">추가하기</b-button>
+                <b-button variant="primary" @click="EmpMod" 
+                :disabled="clickable">수정하기</b-button>
+                <b-button variant="danger" @click="EmpResign" v-if="this.rowOfChild.DepartmentId!=0">퇴사</b-button>
             </div>
         </div>
     </div>
 </template>
 <script>
 export default {
+    props:['rowOfChild'],
     data(){
         return{
+            list:[],
             formData:{
-                EmployeeName:'',
-                DepartmentId:'',
+                EmployeeId:this.rowOfChild.EmployeeId,
+                EmployeeName:this.rowOfChild.EmployeeName,
+                DepartmentId:this.rowOfChild.DepartmentId
             },
             options:[],
-            list:[]
+            nameCheck:false,
+            DepCheck:false
         }
     },
     created(){
         this.getDepList();
     },
+    beforeUpdate(){
+        this.changeCheck();
+    },
+    computed:{
+        clickable(){
+            if(this.nameCheck==false&&this.DepCheck==false){
+                return true;
+            }
+            return false;
+        }
+    },
     methods:{
+        changeCheck(){
+            if(this.rowOfChild.EmployeeName != this.formData.EmployeeName){
+                this.nameCheck = true;
+            }else{
+                this.nameCheck = false;
+            }
+
+            if(this.rowOfChild.DepartmentId != this.formData.DepartmentId){
+                this.DepCheck = true;
+            }else{
+                this.DepCheck = false;
+            }
+        },
+        modalClose(){
+            this.$emit('close-modal');
+        },
         pushDep(){
             for(var i=0;i<this.list.length;i++){
                 this.options.push({
@@ -64,20 +107,30 @@ export default {
                 console.log(error);
             })
         },
-        modalClose(){
-            this.$emit('close-modal');
-        },
-        EmpAdd(){
+        EmpMod(){
             this.axios
-            .post('http://localhost:54884/api/employee/regist',this.formData)
+            .post('http://localhost:54884/api/employee/modifyEmp',this.formData)
             .then((result)=>{
-                alert("추가 완료!");
+                alert("수정 완료!");
                 this.$emit('close-modal');
                 this.$emit('RegEmp', result.data.list);
             })
             .catch((error)=>{
                 console.log(error);
             })
+        },
+        EmpResign(){
+            if(confirm('정말로 퇴사 조치하겠습니까?')){
+                this.axios
+                .post('http://localhost:54884/api/employee/empResign',{EmployeeId:this.formData.EmployeeId})
+                .then((result)=>{
+                    this.$emit('close-modal');
+                    this.$emit('RegEmp', result.data.list);
+                })
+                .catch((error)=>{
+                    console.log(error);
+                })
+            }
         }
     }
 }

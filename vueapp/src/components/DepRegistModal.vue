@@ -40,7 +40,6 @@ export default{
                         alert("추가 완료!");
                         this.$emit('close-modal');
                         this.$emit('RegDep', result.data.list);
-                        this.$emit('refresh');
                     }
                 })
                 .catch((error)=>{

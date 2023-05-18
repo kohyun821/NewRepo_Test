@@ -8,17 +8,12 @@
                 <template v-slot:cell(DepartmentStatus)="{ value }">
                     {{ value ? '활성화' : '비활성화' }}
                 </template>
-                <template v-slot:item="{ item }">
-                    <tr @click="depDetail(item)">
-                    </tr>
-                </template>
             </b-table>
         </div>
         <div id="modal">
             <DepRegistModal v-if="regModalCheck" @close-modal="regModalCheck=false" @RegDep="reList"></DepRegistModal>
             <DepModifyModal v-if="detModalCheck" :rowOfChild="rowData" 
-            @close-modal="detModalCheck=false" @RegDep="reList"
-            @refresh="refreshItem"></DepModifyModal>
+            @close-modal="detModalCheck=false" @RegDep="reList"></DepModifyModal>
         </div>
     </div>
 </template>
@@ -48,7 +43,7 @@ export default {
             }
         }
     },
-    mounted(){
+    created(){
         this.getList();
     },
     methods:{
@@ -61,6 +56,7 @@ export default {
         },
         reList(data){
             this.list = data;
+            this.list.sort((a, b) => b.DepartmentStatus - a.DepartmentStatus);
         },
         showModal(){
             this.regModalCheck = !this.regModalCheck;
@@ -76,9 +72,6 @@ export default {
             .catch((error)=>{
                 console.log(error);
             })
-        },
-        refreshItem(){
-            this.list.sort((a, b) => b.DepartmentStatus - a.DepartmentStatus);
         }
     }
 }
