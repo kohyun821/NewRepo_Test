@@ -1,48 +1,67 @@
 <template>
     <div class="modal-wrap" @click="$emit('close-modal')">
         <div class="modal-container" @click.stop="">
-            <h3>자재 대여 / 반납</h3>
+            <div class="modal-header">
+                <h5 class="modal-title">자재 대여 / 반납</h5>
+            </div>
+
             <hr />
+
             <div class="modal-input">
-                <b>부서 이름 : </b>
-                <select v-model="FormData.departmentId" @change="filterEmployees">
-                    <option v-for="department in departments" :key="department.DepartmentId"
-                        :value="department.DepartmentId">
-                        {{ department.DepartmentName }}
-                    </option>
-                </select>
-            </div>
-            <div class="modal-input">
-                <b>사원 이름 : </b>
-                <select v-model="FormData.employeeId">
-                    <option v-if="employees.length == 0">속한 직원 없음</option>
-                    <option v-for="employee in employees" :key="employee.EmployeeId" :value="employee.EmployeeId">
-                        {{ employee.EmployeeId }}/{{ employee.EmployeeName }}
-                    </option>
-                </select>
-            </div>
-            <div class="modal-input">
-                <b>자재 이름 : </b>
-                <select v-model="FormData.materialId">
-                    <option v-for="material in materials" :key="material.MaterialId" :value="material.MaterialId">
-                        {{ material.MaterialName }}
-                    </option>
-                </select>
-            </div>
-            <div class="modal-input">
-                <b>입/출고</b>
-                <input type="radio" id="in" value="1" v-model="FormData.informationStatus">
-                <label for="in">반납</label>
-                <input type="radio" id="out" value="0" v-model="FormData.informationStatus">
-                <label for="out">대여</label>
-            </div>
-            <div class="modal-input">
-                <b>자재 수량 : </b>
-                <input type="number" id="informationAmount" min="0" v-model="FormData.informationAmount" />
+                <div>
+                    <b>부서 이름</b>
+                    <select class="form-select" v-model="FormData.departmentId" @change="filterEmployees">
+                        <option v-for="department in departments" :key="department.DepartmentId"
+                            :value="department.DepartmentId">
+                            {{ department.DepartmentName }}
+                        </option>
+                    </select>
+                </div>
+
+                <div>
+                    <b>사원 이름</b>
+                    <select class="form-select" v-model="FormData.employeeId">
+                        <option v-if="employees.length == 0">속한 직원 없음</option>
+                        <option v-for="employee in employees" :key="employee.EmployeeId" :value="employee.EmployeeId">
+                            {{ employee.EmployeeId }}/{{ employee.EmployeeName }}
+                        </option>
+                    </select>
+                </div>
+
+                <div>
+                    <b>자재 이름</b>
+                    <select class="form-select" v-model="FormData.materialId">
+                        <option v-for="material in materials" :key="material.MaterialId" :value="material.MaterialId">
+                            {{ material.MaterialName }}
+                        </option>
+                    </select>
+
+                </div>
+
+                <div>
+                    <b>대여 / 반납</b>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="out" value="0"
+                            v-model="FormData.informationStatus">
+                        <label class="form-check-label" for="out">대여</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="in" value="1" v-model="FormData.informationStatus">
+                        <label class="form-check-label" for="in">반납</label>
+                    </div>
+                </div>
+
+                <div>
+                    <b>수량</b>
+                    <input class="form-control" type="number" min="0" v-model="FormData.informationAmount" />
+
+                </div>
+
+
             </div>
             <div class="modal-btn">
                 <b-button @click="modalClose">닫기</b-button>
-                <b-button variant="primary" @click="CreateInformation">추가하기</b-button>
+                <b-button variant="primary" @click="CreateInformation" :disabled="clickable">추가하기</b-button>
             </div>
         </div>
     </div>
@@ -53,6 +72,7 @@ export default {
     emits: ['list'],
     data() {
         return {
+            amountCheck: false,
             filteredEmployees: [],
             informations: [],
             allEmployees: [],
@@ -91,7 +111,27 @@ export default {
             console.error(error)
         }
     },
+    beforeUpdate() {
+        this.changeCheck();
+    },
+    computed: {
+        clickable() {
+            if (this.amountCheck == false) {
+                return true;
+            }
+            //0이상인게 인증 되면 버튼 클릭 가능하게
+            return false;
+        }
+    },
     methods: {
+        changeCheck() {
+            //음수를 입력하면 버튼 잠금
+            if (this.FormData.informationAmount < 0) {
+                this.amountCheck = false;
+            } else {
+                this.amountCheck = true;
+            }
+        },
         modalClose() {
             this.$emit('close-modal');
         },
@@ -113,6 +153,8 @@ export default {
                 alert("공란으로 입력 하지 말아 주세요.");
             else if (this.FormData.employeeId === '속한 직원 없음')
                 alert("사원을 다시 확인해 주세요.");
+            else if (this.FormData.informationAmount <= 0)
+                alert("수량은 양수여야 합니다.");
             else {
 
                 // material details
@@ -140,7 +182,7 @@ export default {
                 axios.post("http://localhost:54884/api/Information/Regist", this.FormData)
                     .then((response) => {
                         alert("값이 추가 되었습니다.");
-                        console.log("response.data",response.data)
+                        console.log("response.data", response.data)
                         this.$emit('updateInformation', response.data);
                         this.modalClose();
                     })
@@ -178,10 +220,22 @@ export default {
 
 .modal-btn {
     margin-top: 5%;
-    text-align: center;
+    text-align: right;
 }
 
 button {
     margin-left: 5%;
+}
+
+.modal-input>* {
+    margin-bottom: 3%;
+}
+
+.modal-input>div {
+    text-align: left;
+}
+
+.modal-input>div>input {
+    margin-top: 1%;
 }
 </style>

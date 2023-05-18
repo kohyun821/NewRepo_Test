@@ -1,23 +1,20 @@
 <template>
-    <div id="btnDiv">
+    <div id="btnDiv" class="text-right m-3" style="float: right;">
         <b-button variant="primary" @click="showModal">자재 대여 / 반납</b-button>
     </div>
     <div>
-        <h1>자재입출</h1>
+        <h1 class="text-center m-3">자재입출</h1>
         <b-table striped hover :items="informations" :fields="fields">
             <template v-slot:cell(InformationStatus)="{ value }">
                 {{ value ? '반납' : '대여' }}
             </template>
         </b-table>
     </div>
-    <div>
-        <div id="modal">
-            <Modal v-if="modalCheck" 
-            @close-modal="modalCheck = false" 
-            @updateInformation="refreshInformations"
-            ></Modal>
-        </div>
-    </div>
+
+    <Modal v-if="modalCheck" 
+    @close-modal="modalCheck = false" 
+    @updateInformation="refreshInformations"
+    ></Modal>
 </template>
 
 <script>
@@ -55,12 +52,12 @@ export default {
             this.modalCheck = !this.modalCheck;
         },
         refreshInformations(newInformation) {
-            console.log("informations",this.informations)
-            console.log("newInformation",newInformation)
-            this.informations.length=0;
-            console.log("informations-after",this.informations)
+            console.log("informations", this.informations)
+            console.log("newInformation", newInformation)
+            this.informations.length = 0;
+            console.log("informations-after", this.informations)
             this.informations = newInformation;
-            console.log("informations-after-after",this.informations)
+            console.log("informations-after-after", this.informations)
         }
     },
 }

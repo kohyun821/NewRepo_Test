@@ -1,20 +1,33 @@
 <template>
     <div class="modal-wrap" @click="$emit('close-modal')">
         <div class="modal-container" @click.stop="">
-            <h3>자재 추가</h3>
+            <div class="modal-header">
+                <h5 class="modal-title">자재 추가</h5>
+                <!-- <button type="button" class="close" @click="modalClose">
+                    <span aria-hidden="true">&times;</span>
+                </button> -->
+            </div>
+
+            <!-- <h3>자재 추가</h3> -->
             <hr />
+
             <div class="modal-input">
-                <b>이름 : </b>
-                <input type="text" id="materialName" v-model="FormData.materialName" />
+                <div>
+                    <input type="text" class="form-control" placeholder="이름" v-model="FormData.materialName" />
+                </div>
+                <div>
+                    <input type="number" class="form-control" placeholder="수량" min="0" v-model="FormData.materialAmount" />
+                </div>
             </div>
-            <div class="modal-input">
-                <b>수량 : </b>
-                <input type="number" id="materialAmount" min="0" v-model="FormData.materialAmount" />
-            </div>
+
+
             <div class="modal-btn">
                 <b-button @click="modalClose">닫기</b-button>
-                <b-button variant="primary" @click="CreateMaterial">추가하기</b-button>
+                <b-button variant="primary" @click="CreateMaterial" :disabled="clickable">추가하기</b-button>
             </div>
+            <!-- <div class="modal-btn">
+                <b-button variant="primary" @click="CreateMaterial" :disabled="clickable">추가하기</b-button>
+            </div> -->
         </div>
     </div>
 </template>
@@ -23,6 +36,7 @@ import axios from 'axios'
 export default {
     data() {
         return {
+            totalCheck: false,
             FormData: {
                 materialName: '',
                 materialAmount: '',
@@ -30,7 +44,27 @@ export default {
             },
         }
     },
+    beforeUpdate() {
+        this.changeCheck();
+    },
+    computed: {
+        clickable() {
+            if (this.totalCheck == false) {
+                return true;
+            }
+            //0이상인게 인증 되면 버튼 클릭 가능하게
+            return false;
+        }
+    },
     methods: {
+        changeCheck() {
+            //음수를 입력하면 버튼 잠금
+            if (this.FormData.materialAmount < 0) {
+                this.totalCheck = false;
+            } else {
+                this.totalCheck = true;
+            }
+        },
         modalClose() {
             this.$emit('close-modal');
         },
@@ -46,7 +80,7 @@ export default {
                 axios.post("http://localhost:54884/api/Material/Regist", this.FormData)
                     .then((response) => {
                         alert("값이 추가 되었습니다.");
-                        this.$emit('updateMaterial',response.data);
+                        this.$emit('updateMaterial', response.data);
                         this.modalClose();
                     })
                     .catch((error) => {
@@ -83,12 +117,13 @@ export default {
 
 .modal-btn {
     margin-top: 5%;
-    text-align: center;
+    text-align: right;
 }
 
-.modal-input {
+.modal-input > * {
     margin-bottom: 1%;
 }
+
 
 button {
     margin-left: 5%;

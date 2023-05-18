@@ -1,28 +1,24 @@
 <template>
-    <div id="btnDiv">
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>자재관리</h1>
         <b-button variant="primary" @click="showModal">자재추가</b-button>
     </div>
-    <div>
-        <h1>자재관리</h1>
-        <b-table striped hover :items="materials" :fields="fields" @row-clicked="rowClick">
+    
+    <b-table striped hover :items="materials" :fields="fields" @row-clicked="rowClick">
             <template v-slot:cell(MaterialStatus)="{ value }">
                 {{ value ? '활성화' : '비 활성화' }}
             </template>
         </b-table>
-    </div>
-    <div>
-        <div id="modal">
-            <RegistModal v-if="regist_modalCheck" @close-modal="regist_modalCheck = false " @refresh="refreshMaterials"></RegistModal>
-        </div>
+    <RegistModal v-if="regist_modalCheck" 
+    @close-modal="regist_modalCheck = false" 
+    @refresh="refreshMaterials"
+    ></RegistModal>
 
-        <div id="modal">
-            <ModifyModal v-if="modify_modalCheck" 
-            :rowOfChild="rowData" 
-            @close-modal="modify_modalCheck = false"
-            @updateMaterial="refreshMaterials"
-            ></ModifyModal>
-        </div>
-    </div>
+    <ModifyModal v-if="modify_modalCheck" 
+    :rowOfChild="rowData" 
+    @close-modal="modify_modalCheck = false"
+    @updateMaterial="refreshMaterials"
+    ></ModifyModal>
 </template>
 
 <script>
@@ -47,12 +43,12 @@ export default {
                 { key: 'MaterialTotal', label: '자재 수량' },
                 { key: 'MaterialStatus', label: '활성화 여부' }
             ],
-            rowData:{
-                MaterialId:'',
-                MaterialName:'',
-                MaterialAmount:'',
-                MaterialTotal:'',
-                MaterialStatus:''
+            rowData: {
+                MaterialId: '',
+                MaterialName: '',
+                MaterialAmount: '',
+                MaterialTotal: '',
+                MaterialStatus: ''
             }
         }
     },
@@ -68,7 +64,7 @@ export default {
         }
     },
     methods: {
-        rowClick(item){
+        rowClick(item) {
             this.modify_modalCheck = !this.modify_modalCheck;
             this.rowData.MaterialId = item.MaterialId;
             this.rowData.MaterialName = item.MaterialName;
@@ -80,8 +76,12 @@ export default {
             this.regist_modalCheck = !this.regist_modalCheck;
         },
         refreshMaterials(updatedMaterial) {
-            this.materials.length=0;
+            console.log("updatedMaterial", updatedMaterial);
+            console.log("this.materials", this.materials);
+            this.materials.length = 0;
+            console.log("this.materials - after", this.materials);
             this.materials = updatedMaterial;
+            console.log("this.materials - after - after", this.materials);
             this.materials.sort((a, b) => b.MaterialStatus - a.MaterialStatus);
         }
     }
