@@ -1,7 +1,7 @@
 <template>
-    <div class="d-flex justify-content-between align-items-center">
-        <h1>자재관리</h1>
-        <b-button variant="primary" @click="showModal">자재추가</b-button>
+    <div class="d-flex justify-content-between align-items-center m-3">
+        <h1 class="text-center w-100">자재관리</h1>
+        <b-button class="btn-custom" variant="primary" @click="showModal">자재추가</b-button>
     </div>
     
     <b-table striped hover :items="materials" :fields="fields" @row-clicked="rowClick">
@@ -88,9 +88,9 @@ export default {
 }
 </script>
 <style>
-#btnDiv {
-    text-align: right;
-    margin-right: 15%;
-    margin-bottom: 2%;
+.btn-custom {
+    font-size: 14px;
+    padding: 6px 12px;
+    white-space: nowrap;
 }
 </style>

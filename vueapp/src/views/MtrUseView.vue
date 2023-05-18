@@ -1,20 +1,15 @@
 <template>
-    <div id="btnDiv" class="text-right m-3" style="float: right;">
-        <b-button variant="primary" @click="showModal">자재 대여 / 반납</b-button>
+    <div class="d-flex justify-content-between align-items-center m-3">
+        <h1 class="text-center w-100">자재입출</h1>
+        <b-button class="btn-custom" variant="primary" @click="showModal">자재 대여 / 반납</b-button>
     </div>
-    <div>
-        <h1 class="text-center m-3">자재입출</h1>
-        <b-table striped hover :items="informations" :fields="fields">
-            <template v-slot:cell(InformationStatus)="{ value }">
-                {{ value ? '반납' : '대여' }}
-            </template>
-        </b-table>
-    </div>
+    <b-table striped hover :items="informations" :fields="fields">
+        <template v-slot:cell(InformationStatus)="{ value }">
+            {{ value ? '반납' : '대여' }}
+        </template>
+    </b-table>
 
-    <Modal v-if="modalCheck" 
-    @close-modal="modalCheck = false" 
-    @updateInformation="refreshInformations"
-    ></Modal>
+    <Modal v-if="modalCheck" @close-modal="modalCheck = false" @updateInformation="refreshInformations"></Modal>
 </template>
 
 <script>
@@ -30,7 +25,6 @@ export default {
             modalCheck: false,
             informations: [],
             fields: [
-                { key: 'InformationId', label: 'ID' },
                 { key: 'MaterialName', label: '자재 이름' },
                 { key: 'EmployeeName', label: '사원 이름' },
                 { key: 'InformationStatus', label: ' 대여 / 반납' },
@@ -63,9 +57,9 @@ export default {
 }
 </script>
 <style>
-#btnDiv {
-    text-align: right;
-    margin-right: 15%;
-    margin-bottom: 2%;
+.btn-custom {
+    font-size: 14px;
+    padding: 6px 12px;
+    white-space: nowrap;
 }
 </style>
