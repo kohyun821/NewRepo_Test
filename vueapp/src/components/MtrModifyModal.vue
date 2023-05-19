@@ -9,7 +9,7 @@
 
             <div class="modal-input">
                 <div>
-                    <b>자재번호 : </b>
+                    <b>자재 번호 : </b>
                     <b>{{ formData.materialId }}</b>
                 </div>
 

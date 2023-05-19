@@ -1,21 +1,31 @@
 <template>
     <div class="modal-wrap" @click="$emit('close-modal')">
         <div class="modal-container" @click.stop="">
-            <h3>부서 상세보기</h3>
+            <div class="modal-header">
+                <h5 class="modal-title">부서 상세보기</h5>
+            </div>
+
             <hr/>
-            <div id="modal-content">
+
+            <div class="modal-input">
                 <div>
-                    <b>부서번호 : </b><b>{{rowOfChild.DepartmentId}}</b>
+                    <b>부서번호 : </b>
+                    <b>{{rowOfChild.DepartmentId}}</b>
                 </div>
-                <br/>
+
                 <div>
-                    <b>부서명 : </b><input v-model="formData.DepartmentName" type="text"/>
+                    <b>부서명</b>
+                    <input type="text" class="form-control" placeholder="이름" v-model="formData.DepartmentName"/>
                 </div>
-                <br/>
+
                 <div>
-                    <b>활성화 여부 : </b><input v-model="formData.DepartmentStatus" type="checkbox"/>
+                    <b>활성화 여부</b>
+
+                    <input class="form-check-input form-check-input_margin_left" type="checkbox" v-model="formData.DepartmentStatus"
+                        id="materialStatusCheck">
                 </div>
             </div>
+
             <div class="modal-btn">
                 <b-button @click="modalClose">닫기</b-button>
                 <b-button variant="primary" @click="depMod" 
@@ -100,34 +110,49 @@ export default {
 </script>
 <style scoped>
 .modal-wrap {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
 }
+
 /* modal or popup */
 .modal-container {
-  position: relative;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 550px;
-  background: #fff;
-  border-radius: 10px;
-  padding: 20px;
-  box-sizing: border-box;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 550px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-sizing: border-box;
 }
-.modal-btn{
+
+.modal-btn {
     margin-top: 5%;
-    text-align: center;
+    text-align: right;
 }
+
 button {
     margin-left: 5%;
 }
-#modal-content{
+
+.modal-input>* {
+    margin-bottom: 3%;
+}
+
+.modal-input>div {
     text-align: left;
-    margin-left: 25%;
+}
+
+.form-check-input_margin_left {
+    margin-left: 2%;
+}
+
+.modal-input>div>input {
+    margin-top: 1%;
 }
 </style>
