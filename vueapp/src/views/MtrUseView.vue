@@ -26,6 +26,7 @@ export default {
             informations: [],
             fields: [
                 { key: 'MaterialName', label: '자재 이름' },
+                { key: 'DepartmentName', label: '부서 이름' },
                 { key: 'EmployeeName', label: '사원 이름' },
                 { key: 'InformationStatus', label: ' 대여 / 반납' },
                 { key: 'InformationAmount', label: '수량' },
@@ -46,12 +47,8 @@ export default {
             this.modalCheck = !this.modalCheck;
         },
         refreshInformations(newInformation) {
-            console.log("informations", this.informations)
-            console.log("newInformation", newInformation)
             this.informations.length = 0;
-            console.log("informations-after", this.informations)
             this.informations = newInformation;
-            console.log("informations-after-after", this.informations)
         }
     },
 }

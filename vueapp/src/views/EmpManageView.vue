@@ -5,12 +5,18 @@
     </div>
 
     <b-table striped hover :items="list" :fields="fields" @row-clicked="rowClick">
+        <template v-slot:cell(DepartmentName)="data">
+            {{ data.value }}
+        </template>
+        <template v-slot:cell(Status)="data">
+            {{ data.item.DepartmentName === '퇴사' ? '퇴사' : '재직중' }}
+        </template>
     </b-table>
 
     <EmpRegistModal v-if="regModalCheck" @close-modal="regModalCheck = false" @RegEmp="reList"></EmpRegistModal>
-
     <EmpModifyModal v-if="detModalCheck" :rowOfChild="rowData" @close-modal="detModalCheck = false" @RegEmp="reList">
     </EmpModifyModal>
+
 </template>
 
 <script>
@@ -33,7 +39,8 @@ export default {
             fields: [
                 { key: 'EmployeeId', label: '사원 번호' },
                 { key: 'EmployeeName', label: '사원명' },
-                { key: 'DepartmentName', label: '부서명' }
+                { key: 'DepartmentName', label: '부서명' },
+                { key: 'Status', label: '상태' }
             ],
             rowData: {
                 EmployeeId: '',

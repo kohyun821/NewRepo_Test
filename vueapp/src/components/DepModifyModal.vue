@@ -83,6 +83,8 @@ export default {
                 .then((result)=>{
                     if(result.data == null){
                         alert("같은 이름의 부서가 있습니다.");
+                    }else if(Object.keys(result.data).includes('Table1')){
+                        alert(result.data.Table1[0].msg);
                     }else{
                         alert("수정 완료!");
                         this.$emit('close-modal');
@@ -96,15 +98,49 @@ export default {
                 this.axios
                 .post('http://localhost:54884/api/department/modifyStatus',this.formData)
                 .then((result)=>{
-                    alert("수정 완료!");
-                    this.$emit('close-modal');
-                    this.$emit('RegDep', result.data.list);
+                    console.log(result.data);
+                    if(Object.keys(result.data).includes('Table1')){
+                        alert(result.data.Table1[0].msg);
+                    }else{
+                        alert("수정 완료!");
+                        this.$emit('close-modal');
+                        this.$emit('RegDep', result.data.list);
+                    }
                 })
                 .catch((error)=>{
                     console.log(error);
                 })
             }
         }
+        // depMod(){
+        //     if(this.nameCheck==true){
+        //         this.axios
+        //         .post('http://localhost:54884/api/department/modifyName',this.formData)
+        //         .then((result)=>{
+        //             if(result.data == null){
+        //                 alert("같은 이름의 부서가 있습니다.");
+        //             }else{
+        //                 alert("수정 완료!");
+        //                 this.$emit('close-modal');
+        //                 this.$emit('RegDep', result.data.list);
+        //             }
+        //         })
+        //         .catch((error)=>{
+        //             console.log(error);
+        //         })
+        //     }else if(this.nameCheck==false&&this.statusCheck==true){
+        //         this.axios
+        //         .post('http://localhost:54884/api/department/modifyStatus',this.formData)
+        //         .then((result)=>{
+        //             alert("수정 완료!");
+        //             this.$emit('close-modal');
+        //             this.$emit('RegDep', result.data.list);
+        //         })
+        //         .catch((error)=>{
+        //             console.log(error);
+        //         })
+        //     }
+        // }
     }
 }
 </script>

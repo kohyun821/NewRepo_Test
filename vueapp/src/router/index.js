@@ -1,43 +1,32 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+//import HomeView from '../views/HomeView.vue'
 
 const routes = [
     {
         path: '/',
         name: 'home',
-        component: HomeView
+        // component: HomeView
+        component: () => import('../views/DepManageView.vue')
     },
     {
         path: '/manage/dep',
         name: 'DepManage',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "about" */ '../views/DepManageView.vue')
+        component: () => import('../views/DepManageView.vue')
     },
     {
         path: '/manage/emp',
         name: 'EmpManage',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "about" */ '../views/EmpManageView.vue')
+        component: () => import('../views/EmpManageView.vue')
     },
     {
         path: '/manage/mtr',
         name: 'MtrManage',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "about" */ '../views/MtrManageView.vue')
+        component: () => import('../views/MtrManageView.vue')
     },
     {
         path: '/use/mtr',
         name: 'MtrUse',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "about" */ '../views/MtrUseView.vue')
+        component: () => import('../views/MtrUseView.vue')
     }
 ]
 
